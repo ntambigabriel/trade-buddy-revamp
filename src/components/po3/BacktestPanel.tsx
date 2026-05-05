@@ -44,11 +44,17 @@ function NumField({ label, value, onChange }: { label: string; value: number; on
 }
 
 export default function BacktestPanel({
-  params, onParamsChange, startDate, endDate, onStartDate, onEndDate, onRun, results, running,
+  params, onParamsChange, startDate, endDate, onStartDate, onEndDate, onRun, results, running, onClose,
 }: Props) {
   const set = (k: keyof StrategyParams, v: any) => onParamsChange({ ...params, [k]: v });
   return (
-    <div style={{ width: 280, background: COLORS.toolbar, borderLeft: `1px solid ${COLORS.border}`, height: "100%", overflowY: "auto", color: "#ddd", fontFamily: "ui-monospace, monospace" }}>
+    <Draggable initial={{ x: typeof window !== "undefined" ? window.innerWidth - 320 : 100, y: 60 }} width={300} onClose={onClose}>
+      {({ onMouseDown }) => (
+    <div style={{ width: "100%", background: COLORS.toolbar, border: `1px solid ${COLORS.border}`, borderRadius: 8, maxHeight: "85vh", overflowY: "auto", color: "#ddd", fontFamily: "ui-monospace, monospace" }}>
+      <div onMouseDown={onMouseDown} style={{ cursor: "move", padding: "8px 12px", borderBottom: `1px solid ${COLORS.border}`, display: "flex", justifyContent: "space-between", alignItems: "center", background: "#0a0e16" }}>
+        <span style={{ color: COLORS.cyan, fontSize: 12, fontWeight: 600 }}>⚡ BACKTEST</span>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: COLORS.textDim, cursor: "pointer", fontSize: 14 }}>×</button>
+      </div>
       <div style={{ padding: 12 }}>
         <h3 style={{ color: COLORS.cyan, fontSize: 12, marginBottom: 8, fontWeight: 600 }}>BACKTEST CONFIG</h3>
         <label style={{ display: "block", fontSize: 11, color: COLORS.textDim, marginBottom: 4 }}>
