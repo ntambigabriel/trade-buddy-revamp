@@ -259,37 +259,11 @@ export default function PO3App() {
       }
     });
 
-    // Price lines (draggable handles) for OPEN MANUAL trades — show live PnL on the entry label
+    // Manual SL/TP/entry are now rendered by <DragHandles/> as draggable HTML overlays.
     manualPriceLinesRef.current.forEach((pl) => {
       try { candleSeriesRef.current?.removePriceLine(pl); } catch {}
     });
     manualPriceLinesRef.current = [];
-    const cs = candleSeriesRef.current;
-    if (cs) {
-      const lev = manualRef.current.leverage;
-      manualRef.current.openTrades.forEach((t) => {
-        const sign = t.type === "BUY" ? 1 : -1;
-        const pnl = sign * (currentBar.close - t.entry) * t.lotSize * lev;
-        const pnlStr = `${pnl >= 0 ? "+" : ""}$${pnl.toFixed(2)}`;
-        const entryLine = cs.createPriceLine({
-          price: t.entry,
-          color: t.type === "BUY" ? "#26a69a" : "#ef5350",
-          lineWidth: 1,
-          lineStyle: LineStyle.Solid,
-          axisLabelVisible: true,
-          title: `${t.type} ${t.lotSize} ${pnlStr}`,
-        });
-        const slLine = cs.createPriceLine({
-          price: t.sl, color: "#ef535099", lineWidth: 1, lineStyle: LineStyle.Dashed,
-          axisLabelVisible: true, title: `SL`,
-        });
-        const tpLine = cs.createPriceLine({
-          price: t.tp, color: "#26a69a99", lineWidth: 1, lineStyle: LineStyle.Dashed,
-          axisLabelVisible: true, title: `TP`,
-        });
-        manualPriceLinesRef.current.push(entryLine, slLine, tpLine);
-      });
-    }
   }, [clearOverlays]);
 
   const applyEventsToDemo = useCallback((events: StrategyEvent[]) => {
