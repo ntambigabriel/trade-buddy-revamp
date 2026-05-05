@@ -3,7 +3,7 @@ import type { ISeriesApi } from "lightweight-charts";
 import type { OpenManualTrade } from "./ManualTradePanel";
 
 interface Props {
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
   seriesRef: React.RefObject<ISeriesApi<"Candlestick"> | null>;
   trades: OpenManualTrade[];
   currentPrice: number;
