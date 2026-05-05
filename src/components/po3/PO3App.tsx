@@ -918,6 +918,7 @@ export default function PO3App() {
           onBuy={(lot, riskPts, rr) => placeManualTrade("BUY", lot, riskPts, rr)}
           onSell={(lot, riskPts, rr) => placeManualTrade("SELL", lot, riskPts, rr)}
           onCloseTrade={closeManualTrade}
+          onUpdateTrade={updateManualTrade}
           onReset={resetManual}
           onClose={() => setShowManual(false)}
         />
