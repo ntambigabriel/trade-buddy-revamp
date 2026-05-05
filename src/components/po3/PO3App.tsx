@@ -64,6 +64,7 @@ export default function PO3App() {
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const overlaySeriesRef = useRef<{ [key: string]: any }>({});
+  const manualPriceLinesRef = useRef<any[]>([]);
 
   const barsRef = useRef<Bar[]>([]);
   const h1MapRef = useRef<Map<number, H1Candle>>(new Map());
