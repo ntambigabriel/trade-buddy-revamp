@@ -634,6 +634,22 @@ export default function PO3App() {
     if (snapshot) drawOverlays(snapshot, bar);
   }, [snapshot, drawOverlays]);
 
+  const updateManualTrade = useCallback((id: string, sl?: number, tp?: number) => {
+    setManual((m) => ({
+      ...m,
+      openTrades: m.openTrades.map((t) =>
+        t.id === id ? { ...t, sl: sl ?? t.sl, tp: tp ?? t.tp } : t
+      ),
+    }));
+    const tb = tradeBoxesRef.current.find((b) => b.id === id);
+    if (tb) {
+      if (sl !== undefined) tb.sl = sl;
+      if (tp !== undefined) tb.tp = tp;
+    }
+    const bars = barsRef.current;
+    if (snapshot && bars.length) drawOverlays(snapshot, bars[idxRef.current]);
+  }, [snapshot, drawOverlays]);
+
   const closeManualTrade = useCallback((id: string) => {
     const bars = barsRef.current;
     if (!bars.length) return;
