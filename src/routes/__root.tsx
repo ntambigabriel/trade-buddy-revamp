@@ -29,14 +29,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Better test" },
+      { name: "description", content: "Trade Buddy Fix is a trading application that enhances visual displays and mobile responsiveness for trade management." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Better test" },
+      { property: "og:description", content: "Trade Buddy Fix is a trading application that enhances visual displays and mobile responsiveness for trade management." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Better test" },
+      { name: "twitter:description", content: "Trade Buddy Fix is a trading application that enhances visual displays and mobile responsiveness for trade management." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b3f3104-481d-4390-82f6-2f7c8087aceb/id-preview-fca29409--73a29844-980c-4f4a-8e53-6826ad0aa34e.lovable.app-1778019403345.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b3f3104-481d-4390-82f6-2f7c8087aceb/id-preview-fca29409--73a29844-980c-4f4a-8e53-6826ad0aa34e.lovable.app-1778019403345.png" },
     ],
     links: [
       {
