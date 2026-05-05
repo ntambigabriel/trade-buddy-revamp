@@ -18,7 +18,7 @@ export async function fetchKlines(
   let retries = 0;
 
   while (cursor < endTime) {
-    const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&startTime=${cursor}&endTime=${endTime}`;
+    const url = `https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&startTime=${cursor}&endTime=${endTime}`;
     try {
       const res = await fetch(url);
       if (!res.ok) {
