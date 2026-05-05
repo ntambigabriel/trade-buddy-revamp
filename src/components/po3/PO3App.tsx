@@ -16,6 +16,7 @@ import Dashboard from "./Dashboard";
 import Demo, { DemoState } from "./Demo";
 import BacktestPanel, { BacktestResults } from "./BacktestPanel";
 import ManualTradePanel, { ManualDemoState, ManualTrade, OpenManualTrade } from "./ManualTradePanel";
+import DragHandles from "./DragHandles";
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 const sevenDaysAgo = () => new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
