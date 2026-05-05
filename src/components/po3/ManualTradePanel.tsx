@@ -193,18 +193,29 @@ export default function ManualTradePanel({ state, onUpdate, onBuy, onSell, onClo
           <div style={{ maxHeight: 100, overflowY: "auto", fontSize: 10 }}>
             {state.openTrades.length === 0 && <div style={{ padding: "4px 12px", color: "#3a4555" }}>No open trades</div>}
             {state.openTrades.map((t) => (
-              <div key={t.id} style={{ padding: "4px 12px", display: "flex", gap: 6, alignItems: "center", borderBottom: `1px solid ${COLORS.border}` }}>
-                <span style={{ color: t.type === "BUY" ? "#26a69a" : "#ef5350", fontWeight: 600 }}>{t.type}</span>
-                <span>{t.lotSize}</span>
-                <span>E:{t.entry.toFixed(1)}</span>
-                <span style={{ color: "#ef5350" }}>SL:{t.sl.toFixed(1)}</span>
-                <span style={{ color: "#26a69a" }}>TP:{t.tp.toFixed(1)}</span>
+              <div key={t.id} style={{ padding: "6px 12px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 4, alignItems: "center", borderBottom: `1px solid ${COLORS.border}` }}>
+                <span style={{ color: t.type === "BUY" ? "#26a69a" : "#ef5350", fontWeight: 600 }}>{t.type} {t.lotSize}</span>
+                <span style={{ color: COLORS.textDim, fontSize: 9 }}>E:{t.entry.toFixed(1)}</span>
                 <button
                   onClick={() => onCloseTrade(t.id)}
-                  style={{ marginLeft: "auto", background: COLORS.pill, color: "#ddd", border: "none", padding: "2px 6px", borderRadius: 3, cursor: "pointer", fontSize: 10 }}
+                  style={{ background: COLORS.pill, color: "#ddd", border: "none", padding: "2px 6px", borderRadius: 3, cursor: "pointer", fontSize: 10 }}
                 >
                   Close
                 </button>
+                <label style={{ gridColumn: "1 / 4", display: "flex", gap: 6, alignItems: "center", fontSize: 10 }}>
+                  <span style={{ color: "#ef5350", width: 22 }}>SL</span>
+                  <input
+                    type="number" step="0.1" defaultValue={t.sl}
+                    onBlur={(e) => { const v = parseFloat(e.target.value); if (!isNaN(v) && v !== t.sl) onUpdateTrade(t.id, v, undefined); }}
+                    style={{ ...inputStyle, flex: 1, width: "auto" }}
+                  />
+                  <span style={{ color: "#26a69a", width: 22 }}>TP</span>
+                  <input
+                    type="number" step="0.1" defaultValue={t.tp}
+                    onBlur={(e) => { const v = parseFloat(e.target.value); if (!isNaN(v) && v !== t.tp) onUpdateTrade(t.id, undefined, v); }}
+                    style={{ ...inputStyle, flex: 1, width: "auto" }}
+                  />
+                </label>
               </div>
             ))}
           </div>
