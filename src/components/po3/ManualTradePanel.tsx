@@ -271,3 +271,9 @@ const tradeBtnStyle = (color: string): React.CSSProperties => ({
   fontSize: 12,
   letterSpacing: 0.5,
 });
+
+const stepBtn: React.CSSProperties = {
+  background: COLORS.pill, color: "#ddd", border: "none",
+  padding: "6px 12px", borderRadius: 3, cursor: "pointer",
+  fontSize: 16, fontWeight: 700, lineHeight: 1,
+};
