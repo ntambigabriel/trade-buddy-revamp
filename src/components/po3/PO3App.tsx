@@ -838,26 +838,50 @@ export default function PO3App() {
             </div>
           </div>
 
+          {/* Draggable SL/TP handles for open manual trades */}
+          <DragHandles
+            containerRef={chartContainerRef}
+            seriesRef={candleSeriesRef}
+            trades={manual.openTrades}
+            currentPrice={barsRef.current[currentBarIndex]?.close ?? 0}
+            leverage={manual.leverage}
+            onUpdate={updateManualTrade}
+          />
+
           {/* Floating quick BUY / SELL bar — always available, even on mobile */}
-          <div style={{ position: "absolute", left: 8, right: 8, bottom: 8, display: "flex", gap: 6, zIndex: 6, pointerEvents: "none" }}>
+          <div style={{ position: "absolute", left: 8, right: 8, bottom: 8, display: "flex", gap: 6, zIndex: 6, pointerEvents: "none", alignItems: "center" }}>
             <button
               onClick={() => placeManualTrade("BUY", manual.lotSize)}
-              style={{ pointerEvents: "auto", flex: 1, maxWidth: 160, background: "#26a69a", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
+              style={{ pointerEvents: "auto", flex: 1, background: "#26a69a", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
             >
-              ▲ BUY {manual.lotSize}
+              ▲ BUY
             </button>
+            <div style={{ pointerEvents: "auto", display: "flex", flexDirection: "column", alignItems: "center", background: "rgba(8,11,16,0.9)", border: `1px solid ${COLORS.border}`, borderRadius: 6, padding: "2px 4px" }}>
+              <div style={{ fontSize: 9, color: COLORS.textDim, lineHeight: 1 }}>LOT</div>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={manual.lotSize}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  if (!isNaN(v) && v > 0) setManual((m) => ({ ...m, lotSize: Math.round(v * 100) / 100 }));
+                }}
+                style={{ width: 56, background: "transparent", border: "none", color: "#fff", fontSize: 13, fontWeight: 700, textAlign: "center", padding: "2px 0", outline: "none" }}
+              />
+            </div>
             <button
               onClick={() => setShowManual(true)}
-              style={{ pointerEvents: "auto", background: "rgba(8,11,16,0.85)", color: "#fff", border: `1px solid ${COLORS.border}`, padding: "10px 12px", borderRadius: 6, fontSize: 13, cursor: "pointer" }}
+              style={{ pointerEvents: "auto", background: "rgba(8,11,16,0.85)", color: "#fff", border: `1px solid ${COLORS.border}`, padding: "10px 10px", borderRadius: 6, fontSize: 13, cursor: "pointer" }}
               title="Open trade panel"
             >
               ⚙
             </button>
             <button
               onClick={() => placeManualTrade("SELL", manual.lotSize)}
-              style={{ pointerEvents: "auto", flex: 1, maxWidth: 160, background: "#ef5350", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
+              style={{ pointerEvents: "auto", flex: 1, background: "#ef5350", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
             >
-              ▼ SELL {manual.lotSize}
+              ▼ SELL
             </button>
           </div>
         </div>
