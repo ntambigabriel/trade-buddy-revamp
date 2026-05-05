@@ -62,6 +62,7 @@ export default function ManualTradePanel({ state, onUpdate, onBuy, onSell, onClo
         y: 60,
       }}
       width={340}
+      onClose={onClose}
     >
       {({ onMouseDown }) => (
         <div
