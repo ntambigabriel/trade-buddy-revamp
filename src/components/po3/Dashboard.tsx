@@ -79,7 +79,7 @@ export default function Dashboard({ snapshot, onClose }: Props) {
   };
 
   return (
-    <Draggable initial={{ x: window.innerWidth - 440, y: 60 }} width={420}>
+    <Draggable initial={{ x: window.innerWidth - 440, y: 60 }} width={420} onClose={onClose}>
       {({ onMouseDown }) => (
         <div
           style={{
