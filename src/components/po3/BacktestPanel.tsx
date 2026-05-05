@@ -25,6 +25,7 @@ interface Props {
   onRun: () => void;
   results: BacktestResults | null;
   running: boolean;
+  onClose: () => void;
 }
 
 function NumField({ label, value, onChange }: { label: string; value: number; onChange: (n: number) => void }) {
