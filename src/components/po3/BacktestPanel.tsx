@@ -132,6 +132,8 @@ export default function BacktestPanel({
         </div>
       )}
     </div>
+      )}
+    </Draggable>
   );
 }
 
