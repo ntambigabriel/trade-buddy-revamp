@@ -5,10 +5,11 @@ interface Props {
   initial: { x: number; y: number };
   width: number;
   zIndex?: number;
+  onClose?: () => void;
   children: (handle: { onMouseDown: (e: React.MouseEvent | React.TouchEvent) => void }) => ReactNode;
 }
 
-export default function Draggable({ initial, width, zIndex = 100, children }: Props) {
+export default function Draggable({ initial, width, zIndex = 100, onClose, children }: Props) {
   const isMobile = useIsMobile();
   const [pos, setPos] = useState(initial);
   const dragRef = useRef<{ ox: number; oy: number; sx: number; sy: number } | null>(null);
@@ -44,25 +45,46 @@ export default function Draggable({ initial, width, zIndex = 100, children }: Pr
     dragRef.current = { ox: pos.x, oy: pos.y, sx: p.x, sy: p.y };
   };
 
-  // On mobile, dock as full-width bottom sheet — ignore drag pos.
-  const style: React.CSSProperties = isMobile
-    ? {
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: "100%",
-        maxHeight: "55vh",
-        overflowY: "auto",
-        zIndex,
-      }
-    : {
-        position: "fixed",
-        left: pos.x,
-        top: pos.y,
-        width,
-        zIndex,
-      };
+  if (isMobile) {
+    // Modal bottom sheet with backdrop — chart stays accessible by dismissing.
+    return (
+      <>
+        <div
+          onClick={onClose}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
+            zIndex: zIndex - 1,
+          }}
+        />
+        <div
+          style={{
+            position: "fixed",
+            left: 0, right: 0, bottom: 0,
+            width: "100%",
+            maxHeight: "85vh",
+            overflowY: "auto",
+            zIndex,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+            overflowX: "hidden",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {children({ onMouseDown })}
+        </div>
+      </>
+    );
+  }
 
-  return <div style={style}>{children({ onMouseDown })}</div>;
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: pos.x, top: pos.y,
+        width, zIndex,
+      }}
+    >
+      {children({ onMouseDown })}
+    </div>
+  );
 }
