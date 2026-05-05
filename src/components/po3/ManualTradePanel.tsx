@@ -146,27 +146,26 @@ export default function ManualTradePanel({ state, onUpdate, onBuy, onSell, onClo
           {/* Lot size selector */}
           <div style={{ padding: "8px 12px", borderBottom: `1px solid ${COLORS.border}` }}>
             <div style={{ fontSize: 10, color: COLORS.textDim, marginBottom: 4 }}>LOT SIZE</div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
-              {LOT_PRESETS.map((l) => (
-                <button
-                  key={l}
-                  onClick={() => onUpdate({ lotSize: l })}
-                  style={{
-                    background: state.lotSize === l ? COLORS.cyan : COLORS.pill,
-                    color: state.lotSize === l ? "#0b0f19" : COLORS.textDim,
-                    border: "none", padding: "4px 8px", borderRadius: 3, cursor: "pointer", fontSize: 11,
-                  }}
-                >
-                  {l}
-                </button>
-              ))}
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <button
+                onClick={() => onUpdate({ lotSize: Math.max(0.01, Math.round((state.lotSize - 0.01) * 100) / 100) })}
+                style={stepBtn}
+              >−</button>
               <input
                 type="number"
                 step="0.01"
+                min="0.01"
                 value={state.lotSize}
-                onChange={(e) => onUpdate({ lotSize: Math.max(0.001, parseFloat(e.target.value) || 0) })}
-                style={{ ...inputStyle, width: 70 }}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  if (!isNaN(v) && v > 0) onUpdate({ lotSize: Math.round(v * 100) / 100 });
+                }}
+                style={{ ...inputStyle, width: 90, textAlign: "center", fontSize: 14, fontWeight: 600 }}
               />
+              <button
+                onClick={() => onUpdate({ lotSize: Math.round((state.lotSize + 0.01) * 100) / 100 })}
+                style={stepBtn}
+              >+</button>
             </div>
           </div>
 
