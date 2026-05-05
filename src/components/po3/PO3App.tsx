@@ -74,7 +74,8 @@ export default function PO3App() {
   const [showStats, setShowStats] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [showBacktest, setShowBacktest] = useState(false);
-  const [showManual, setShowManual] = useState(true);
+  const [showManual, setShowManual] = useState(false);
+  const [showDates, setShowDates] = useState(false);
   const [playing, setPlaying] = useState(false);
   const playingRef = useRef(false);
   const [speed, setSpeed] = useState<keyof typeof SPEED_MS>("5x");
