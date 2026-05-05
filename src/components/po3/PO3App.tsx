@@ -828,6 +828,7 @@ export default function PO3App() {
             onRun={runBacktest}
             results={results}
             running={running}
+            onClose={() => setShowBacktest(false)}
           />
         )}
       </div>
