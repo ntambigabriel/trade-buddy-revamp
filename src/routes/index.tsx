@@ -1,26 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
+
+// Charts depend on `window`; load only on the client.
+const PO3App = lazy(() => import("@/components/po3/PO3App"));
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <Suspense
+      fallback={
+        <div style={{ position: "fixed", inset: 0, background: "#0b0f19", color: "#8aaabb", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "ui-monospace,monospace" }}>
+          Loading PO3…
+        </div>
+      }
+    >
+      <PO3App />
+    </Suspense>
+  );
 }
