@@ -49,7 +49,7 @@ interface Props {
 
 const LOT_PRESETS = [0.01, 0.05, 0.1, 0.5, 1];
 
-export default function ManualTradePanel({ state, onUpdate, onBuy, onSell, onCloseTrade, onReset, onClose }: Props) {
+export default function ManualTradePanel({ state, onUpdate, onBuy, onSell, onCloseTrade, onUpdateTrade, onReset, onClose }: Props) {
   const [open, setOpen] = useState(true);
   const [riskPts, setRiskPts] = useState(100);
   const [rr, setRr] = useState(1.5);
