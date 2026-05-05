@@ -343,6 +343,13 @@ export class StrategyEngine {
           this.consecSells++;
           this.consecBuys = 0;
           events.push({ type: "SELL_ENTRY", bar, index: idx, entry: sell.entry, sl: sell.sl, tp: sell.tp });
+        } else {
+          // BUY SL hit after midTouched but conversion to SELL was rejected
+          // (H1 filter or max consec sells). Still close the buy visually.
+          events.push({ type: "BUY_INVALIDATED", bar, index: idx });
+          this.today.buyR -= 1;
+          this.today.totalR -= 1;
+          this.consecBuys = 0;
         }
         this.resetBuy();
       } else if (!this.midTouched && this.buySL !== null && bar.low <= this.buySL) {

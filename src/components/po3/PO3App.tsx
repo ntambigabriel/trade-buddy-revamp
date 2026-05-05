@@ -64,6 +64,7 @@ export default function PO3App() {
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const overlaySeriesRef = useRef<{ [key: string]: any }>({});
+  const manualPriceLinesRef = useRef<any[]>([]);
 
   const barsRef = useRef<Bar[]>([]);
   const h1MapRef = useRef<Map<number, H1Candle>>(new Map());
@@ -224,12 +225,23 @@ export default function PO3App() {
       const t1 = Math.min(tEnd, currentBar.time) as UTCTimestamp;
       if ((t1 as number) <= (t0 as number)) return;
 
-      const dashStyle = tb.manual ? LineStyle.Solid : LineStyle.Dashed;
+      const dashStyle = LineStyle.Dashed;
+
+      if (tb.manual) {
+        // Manual trades: faint, distinguishable from auto strategy lines.
+        const tpColor = "#26a69a55";
+        const slColor = "#ef535055";
+        const entryColor = "#ffffff55";
+        addLine(`mTP_${i}`, tpColor, LineStyle.Dotted, [{ time: t0, value: tb.tp }, { time: t1, value: tb.tp }], 1);
+        addLine(`mEntry_${i}`, entryColor, LineStyle.Solid, [{ time: t0, value: tb.entry }, { time: t1, value: tb.entry }], 1);
+        addLine(`mSL_${i}`, slColor, LineStyle.Dotted, [{ time: t0, value: tb.sl }, { time: t1, value: tb.sl }], 1);
+        return;
+      }
 
       if (tb.type === "BUY") {
-        const tpColor = tb.manual ? "#26a69a" : "#26a69aaa";
-        const slColor = tb.manual ? "#ef5350" : "#4488FFcc";
-        const entryColor = tb.manual ? "#ffffffcc" : "#88bbffcc";
+        const tpColor = "#26a69aaa";
+        const slColor = "#4488FFcc";
+        const entryColor = "#88bbffcc";
         addLine(`buyTP_${i}`, tpColor, dashStyle, [{ time: t0, value: tb.tp }, { time: t1, value: tb.tp }], 2);
         addLine(`buyEntry_${i}`, entryColor, LineStyle.Solid, [{ time: t0, value: tb.entry }, { time: t1, value: tb.entry }], 1);
         addLine(`buySL_${i}`, slColor, dashStyle, [{ time: t0, value: tb.sl }, { time: t1, value: tb.sl }], 2);
@@ -238,14 +250,46 @@ export default function PO3App() {
             [{ time: t0, value: tb.mid }, { time: t1, value: tb.mid }], 1);
         }
       } else {
-        const tpColor = tb.manual ? "#26a69a" : "#00d060cc";
-        const slColor = tb.manual ? "#ef5350" : "#ff3333cc";
-        const entryColor = tb.manual ? "#ffffffcc" : "#ffd700cc";
+        const tpColor = "#00d060cc";
+        const slColor = "#ff3333cc";
+        const entryColor = "#ffd700cc";
         addLine(`sellE_${i}`, entryColor, LineStyle.Solid, [{ time: t0, value: tb.entry }, { time: t1, value: tb.entry }], 1);
         addLine(`sellSL_${i}`, slColor, dashStyle, [{ time: t0, value: tb.sl }, { time: t1, value: tb.sl }], 2);
         addLine(`sellTP_${i}`, tpColor, dashStyle, [{ time: t0, value: tb.tp }, { time: t1, value: tb.tp }], 2);
       }
     });
+
+    // Price lines (draggable handles) for OPEN MANUAL trades — show live PnL on the entry label
+    manualPriceLinesRef.current.forEach((pl) => {
+      try { candleSeriesRef.current?.removePriceLine(pl); } catch {}
+    });
+    manualPriceLinesRef.current = [];
+    const cs = candleSeriesRef.current;
+    if (cs) {
+      const lev = manualRef.current.leverage;
+      manualRef.current.openTrades.forEach((t) => {
+        const sign = t.type === "BUY" ? 1 : -1;
+        const pnl = sign * (currentBar.close - t.entry) * t.lotSize * lev;
+        const pnlStr = `${pnl >= 0 ? "+" : ""}$${pnl.toFixed(2)}`;
+        const entryLine = cs.createPriceLine({
+          price: t.entry,
+          color: t.type === "BUY" ? "#26a69a" : "#ef5350",
+          lineWidth: 1,
+          lineStyle: LineStyle.Solid,
+          axisLabelVisible: true,
+          title: `${t.type} ${t.lotSize} ${pnlStr}`,
+        });
+        const slLine = cs.createPriceLine({
+          price: t.sl, color: "#ef535099", lineWidth: 1, lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true, title: `SL`,
+        });
+        const tpLine = cs.createPriceLine({
+          price: t.tp, color: "#26a69a99", lineWidth: 1, lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true, title: `TP`,
+        });
+        manualPriceLinesRef.current.push(entryLine, slLine, tpLine);
+      });
+    }
   }, [clearOverlays]);
 
   const applyEventsToDemo = useCallback((events: StrategyEvent[]) => {
@@ -590,6 +634,22 @@ export default function PO3App() {
     if (snapshot) drawOverlays(snapshot, bar);
   }, [snapshot, drawOverlays]);
 
+  const updateManualTrade = useCallback((id: string, sl?: number, tp?: number) => {
+    setManual((m) => ({
+      ...m,
+      openTrades: m.openTrades.map((t) =>
+        t.id === id ? { ...t, sl: sl ?? t.sl, tp: tp ?? t.tp } : t
+      ),
+    }));
+    const tb = tradeBoxesRef.current.find((b) => b.id === id);
+    if (tb) {
+      if (sl !== undefined) tb.sl = sl;
+      if (tp !== undefined) tb.tp = tp;
+    }
+    const bars = barsRef.current;
+    if (snapshot && bars.length) drawOverlays(snapshot, bars[idxRef.current]);
+  }, [snapshot, drawOverlays]);
+
   const closeManualTrade = useCallback((id: string) => {
     const bars = barsRef.current;
     if (!bars.length) return;
@@ -858,6 +918,7 @@ export default function PO3App() {
           onBuy={(lot, riskPts, rr) => placeManualTrade("BUY", lot, riskPts, rr)}
           onSell={(lot, riskPts, rr) => placeManualTrade("SELL", lot, riskPts, rr)}
           onCloseTrade={closeManualTrade}
+          onUpdateTrade={updateManualTrade}
           onReset={resetManual}
           onClose={() => setShowManual(false)}
         />
