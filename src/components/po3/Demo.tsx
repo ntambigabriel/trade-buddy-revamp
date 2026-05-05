@@ -39,7 +39,7 @@ export default function Demo({ demo, onUpdate, onReset, onClose }: Props) {
   const blown = demo.balance <= 0;
 
   return (
-    <Draggable initial={{ x: window.innerWidth - 380, y: window.innerHeight - 540 }} width={360}>
+    <Draggable initial={{ x: window.innerWidth - 380, y: window.innerHeight - 540 }} width={360} onClose={onClose}>
       {({ onMouseDown }) => (
         <div
           style={{
