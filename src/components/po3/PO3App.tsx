@@ -802,6 +802,29 @@ export default function PO3App() {
               <span style={{ color: COLORS.textDim }}>= solid lines</span>
             </div>
           </div>
+
+          {/* Floating quick BUY / SELL bar — always available, even on mobile */}
+          <div style={{ position: "absolute", left: 8, right: 8, bottom: 8, display: "flex", gap: 6, zIndex: 6, pointerEvents: "none" }}>
+            <button
+              onClick={() => placeManualTrade("BUY", manual.lotSize)}
+              style={{ pointerEvents: "auto", flex: 1, maxWidth: 160, background: "#26a69a", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
+            >
+              ▲ BUY {manual.lotSize}
+            </button>
+            <button
+              onClick={() => setShowManual(true)}
+              style={{ pointerEvents: "auto", background: "rgba(8,11,16,0.85)", color: "#fff", border: `1px solid ${COLORS.border}`, padding: "10px 12px", borderRadius: 6, fontSize: 13, cursor: "pointer" }}
+              title="Open trade panel"
+            >
+              ⚙
+            </button>
+            <button
+              onClick={() => placeManualTrade("SELL", manual.lotSize)}
+              style={{ pointerEvents: "auto", flex: 1, maxWidth: 160, background: "#ef5350", color: "#fff", border: "none", padding: "10px 8px", borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: "pointer", boxShadow: "0 4px 14px rgba(0,0,0,0.4)" }}
+            >
+              ▼ SELL {manual.lotSize}
+            </button>
+          </div>
         </div>
         {showBacktest && (
           <BacktestPanel
