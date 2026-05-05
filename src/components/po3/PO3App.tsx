@@ -708,55 +708,41 @@ export default function PO3App() {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: COLORS.bg, color: "#ddd", display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      {/* TOOLBAR */}
-      <div style={{ minHeight: 44, background: COLORS.toolbar, borderBottom: `1px solid ${COLORS.border}`, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4, padding: "6px 12px", flexShrink: 0 }}>
-        <div style={{ color: COLORS.cyan, fontFamily: "ui-monospace, monospace", fontSize: 12, fontWeight: 700, letterSpacing: 1, fontVariant: "small-caps" }}>
-          PO3 MODEL A
-        </div>
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", gap: 4 }}>
-          <span style={{ background: COLORS.pillBadgeBg, color: COLORS.pillBadgeText, padding: "4px 10px", borderRadius: 12, fontSize: 11, fontFamily: "ui-monospace, monospace" }}>BTCUSDT</span>
-          <span style={{ background: COLORS.pillBadgeBg, color: COLORS.pillBadgeText, padding: "4px 10px", borderRadius: 12, fontSize: 11, fontFamily: "ui-monospace, monospace" }}>1m</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <PillBtn onClick={() => setShowStats((v) => !v)} active={showStats}>📊 Stats</PillBtn>
-          <PillBtn onClick={() => setShowDemo((v) => !v)} active={showDemo}>💼 Auto Demo</PillBtn>
-          <PillBtn onClick={() => setShowManual((v) => !v)} active={showManual}>🎯 Manual</PillBtn>
-          <PillBtn onClick={() => setShowBacktest((v) => !v)} active={showBacktest}>⚡ Backtest</PillBtn>
+      {/* TOOLBAR — compact, single-row scrollable on mobile */}
+      <div style={{ background: COLORS.toolbar, borderBottom: `1px solid ${COLORS.border}`, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", overflowX: "auto", whiteSpace: "nowrap", WebkitOverflowScrolling: "touch" }}>
+          <div style={{ color: COLORS.cyan, fontFamily: "ui-monospace, monospace", fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>
+            PO3
+          </div>
+          <span style={{ background: COLORS.pillBadgeBg, color: COLORS.pillBadgeText, padding: "3px 8px", borderRadius: 12, fontSize: 10, fontFamily: "ui-monospace, monospace" }}>BTCUSDT</span>
+          <span style={{ background: COLORS.pillBadgeBg, color: COLORS.pillBadgeText, padding: "3px 8px", borderRadius: 12, fontSize: 10, fontFamily: "ui-monospace, monospace" }}>1m</span>
+          <Sep />
+          <PillBtn onClick={() => setShowStats((v) => !v)} active={showStats}>📊</PillBtn>
+          <PillBtn onClick={() => setShowDemo((v) => !v)} active={showDemo}>💼</PillBtn>
+          <PillBtn onClick={() => setShowManual((v) => !v)} active={showManual}>🎯</PillBtn>
+          <PillBtn onClick={() => setShowBacktest((v) => !v)} active={showBacktest}>⚡</PillBtn>
           <Sep />
           <PillBtn onClick={reset}>◀◀</PillBtn>
-          <PillBtn onClick={handlePlayPause} active={playing}>{playing ? "⏸ Pause" : "▶ Play"}</PillBtn>
-          <PillBtn onClick={stepForward}>⏭ Step</PillBtn>
-          <PillBtn onClick={() => setScissorsMode((v) => !v)} active={scissorsMode}>✂ Scissors</PillBtn>
-          <PillBtn onClick={goToEnd}>▶▶ Live</PillBtn>
+          <PillBtn onClick={handlePlayPause} active={playing}>{playing ? "⏸" : "▶"}</PillBtn>
+          <PillBtn onClick={stepForward}>⏭</PillBtn>
+          <PillBtn onClick={() => setScissorsMode((v) => !v)} active={scissorsMode}>✂</PillBtn>
+          <PillBtn onClick={goToEnd}>▶▶</PillBtn>
           <Sep />
-          <span style={{ marginLeft: 4, color: COLORS.textDim, fontSize: 11 }}>Speed:</span>
           {(["1x", "5x", "10x", "50x"] as const).map((s) => <SpeedBtn key={s} s={s} speed={speed} setSpeed={setSpeed} />)}
           <Sep />
-          <span style={{ color: COLORS.textDim, fontSize: 11 }}>From</span>
-          <input
-            type="date"
-            value={startDate}
-            min="2020-01-01"
-            max={endDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            style={{ background: COLORS.pill, color: COLORS.textDim, border: `1px solid ${COLORS.border}`, padding: "4px 6px", borderRadius: 4, fontSize: 11, marginLeft: 4 }}
-          />
-          <span style={{ color: COLORS.textDim, fontSize: 11, marginLeft: 6 }}>To</span>
-          <input
-            type="date"
-            value={endDate}
-            min="2020-01-01"
-            max={todayStr()}
-            onChange={(e) => setEndDate(e.target.value)}
-            style={{ background: COLORS.pill, color: COLORS.textDim, border: `1px solid ${COLORS.border}`, padding: "4px 6px", borderRadius: 4, fontSize: 11, marginLeft: 4 }}
-          />
-          <button
-            onClick={loadData}
-            style={{ marginLeft: 6, background: COLORS.cyan, color: "#0b0f19", border: "none", padding: "6px 12px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 600 }}
-          >
-            Load Data
-          </button>
+          <PillBtn onClick={() => setShowDates((v) => !v)} active={showDates}>📅 Dates</PillBtn>
         </div>
+        {showDates && (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderTop: `1px solid ${COLORS.border}`, flexWrap: "wrap" }}>
+            <span style={{ color: COLORS.textDim, fontSize: 11 }}>From</span>
+            <input type="date" value={startDate} min="2020-01-01" max={endDate} onChange={(e) => setStartDate(e.target.value)} style={{ background: COLORS.pill, color: COLORS.textDim, border: `1px solid ${COLORS.border}`, padding: "4px 6px", borderRadius: 4, fontSize: 11 }} />
+            <span style={{ color: COLORS.textDim, fontSize: 11 }}>To</span>
+            <input type="date" value={endDate} min="2020-01-01" max={todayStr()} onChange={(e) => setEndDate(e.target.value)} style={{ background: COLORS.pill, color: COLORS.textDim, border: `1px solid ${COLORS.border}`, padding: "4px 6px", borderRadius: 4, fontSize: 11 }} />
+            <button onClick={loadData} style={{ background: COLORS.cyan, color: "#0b0f19", border: "none", padding: "6px 12px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 600 }}>
+              Load Data
+            </button>
+          </div>
+        )}
       </div>
 
       {/* MAIN AREA */}
