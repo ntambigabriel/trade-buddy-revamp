@@ -42,6 +42,7 @@ interface Props {
   onBuy: (lot: number, riskPts: number, rr: number) => void;
   onSell: (lot: number, riskPts: number, rr: number) => void;
   onCloseTrade: (id: string) => void;
+  onUpdateTrade: (id: string, sl?: number, tp?: number) => void;
   onReset: () => void;
   onClose: () => void;
 }
