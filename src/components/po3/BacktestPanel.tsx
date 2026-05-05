@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Draggable from "./Draggable";
 import { COLORS } from "./constants";
 import { StrategyParams } from "@/lib/strategy";
 
