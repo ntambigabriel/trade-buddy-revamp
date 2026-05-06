@@ -204,7 +204,7 @@ export class StrategyEngine {
     const pivot = this.detectPivotHigh();
     const p = this.params;
 
-    // STATE 0
+    // STATE 0 -> 1 (Pine uses sequential `if` blocks so a bar can cascade)
     if (this.state === 0 && pivot) {
       this.p1 = pivot.price;
       this.p1Bar = pivot.barIndex;
@@ -213,7 +213,7 @@ export class StrategyEngine {
       this.closesBelow = 0;
     }
     // STATE 1
-    else if (this.state === 1) {
+    if (this.state === 1) {
       if (pivot && this.p1 !== null && pivot.price > this.p1) {
         this.p1 = pivot.price;
         this.p1Bar = pivot.barIndex;
@@ -233,7 +233,7 @@ export class StrategyEngine {
       }
     }
     // STATE 2
-    else if (this.state === 2) {
+    if (this.state === 2) {
       if (this.p2 === null || bar.high > this.p2) {
         this.p2 = bar.high;
         this.p2Bar = idx;
@@ -258,10 +258,10 @@ export class StrategyEngine {
       }
     }
     // STATE 3
-    else if (this.state === 3) {
+    if (this.state === 3) {
       this.corrLow = Math.min(this.corrLow ?? bar.low, bar.low);
       this.corrHigh = Math.max(this.corrHigh ?? bar.high, bar.high);
-      if (this.p1 !== null && bar.close > this.p1 && this.consecBuys < p.maxConsecBuys && !this.inBuyTrade) {
+      if (this.p1 !== null && bar.close > this.p1 && this.consecBuys < p.maxConsecBuys) {
         const prospectiveSL = (this.corrLow ?? bar.low) - p.slBuffer;
         const prospectiveRisk = bar.close - prospectiveSL;
         const riskOk = prospectiveRisk >= p.minRiskSize && prospectiveRisk <= p.maxRiskSize;
