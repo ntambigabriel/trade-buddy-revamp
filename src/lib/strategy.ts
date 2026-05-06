@@ -233,7 +233,7 @@ export class StrategyEngine {
       }
     }
     // STATE 2
-    else if (this.state === 2) {
+    if (this.state === 2) {
       if (this.p2 === null || bar.high > this.p2) {
         this.p2 = bar.high;
         this.p2Bar = idx;
