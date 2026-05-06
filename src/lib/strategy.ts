@@ -258,10 +258,10 @@ export class StrategyEngine {
       }
     }
     // STATE 3
-    else if (this.state === 3) {
+    if (this.state === 3) {
       this.corrLow = Math.min(this.corrLow ?? bar.low, bar.low);
       this.corrHigh = Math.max(this.corrHigh ?? bar.high, bar.high);
-      if (this.p1 !== null && bar.close > this.p1 && this.consecBuys < p.maxConsecBuys && !this.inBuyTrade) {
+      if (this.p1 !== null && bar.close > this.p1 && this.consecBuys < p.maxConsecBuys) {
         const prospectiveSL = (this.corrLow ?? bar.low) - p.slBuffer;
         const prospectiveRisk = bar.close - prospectiveSL;
         const riskOk = prospectiveRisk >= p.minRiskSize && prospectiveRisk <= p.maxRiskSize;
