@@ -10,7 +10,7 @@ export interface Bar {
 const CACHE_PREFIX = "btc_bars_";
 const CHUNK_BARS = 1000;
 const CHUNK_MS = CHUNK_BARS * 60 * 1000;
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 20;
 
 function cacheKey(start: number, end: number) {
   return `${CACHE_PREFIX}${start}_${end}`;
@@ -97,24 +97,18 @@ export async function fetchKlines(
   const collected: Bar[] = [];
   let fetched = 0;
 
-  // Fetch the most recent chunk first so the chart can paint immediately
-  if (chunks.length) {
-    const last = chunks.pop()!;
-    const bars = await fetchChunk(last.start, last.end);
-    collected.push(...bars);
-    fetched += bars.length;
-    onProgress?.(fetched, totalEstimate);
-  }
-
-  // Parallelize the rest in batches of BATCH_SIZE
+  // Fire ALL chunks in parallel batches; report progress as each resolves.
   for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
     const batch = chunks.slice(i, i + BATCH_SIZE);
-    const results = await Promise.all(batch.map((c) => fetchChunk(c.start, c.end)));
-    for (const bars of results) {
-      collected.push(...bars);
-      fetched += bars.length;
-    }
-    onProgress?.(fetched, totalEstimate);
+    await Promise.all(
+      batch.map((c) =>
+        fetchChunk(c.start, c.end).then((bars) => {
+          collected.push(...bars);
+          fetched += bars.length;
+          onProgress?.(fetched, totalEstimate);
+        })
+      )
+    );
   }
 
   // Sort + dedupe
