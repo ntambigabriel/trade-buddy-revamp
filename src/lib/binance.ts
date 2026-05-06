@@ -10,7 +10,7 @@ export interface Bar {
 const CACHE_PREFIX = "btc_bars_";
 const CHUNK_BARS = 1000;
 const CHUNK_MS = CHUNK_BARS * 60 * 1000;
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 20;
 
 function cacheKey(start: number, end: number) {
   return `${CACHE_PREFIX}${start}_${end}`;
