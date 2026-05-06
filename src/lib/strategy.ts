@@ -204,7 +204,7 @@ export class StrategyEngine {
     const pivot = this.detectPivotHigh();
     const p = this.params;
 
-    // STATE 0
+    // STATE 0 -> 1 (Pine uses sequential `if` blocks so a bar can cascade)
     if (this.state === 0 && pivot) {
       this.p1 = pivot.price;
       this.p1Bar = pivot.barIndex;
@@ -213,7 +213,7 @@ export class StrategyEngine {
       this.closesBelow = 0;
     }
     // STATE 1
-    else if (this.state === 1) {
+    if (this.state === 1) {
       if (pivot && this.p1 !== null && pivot.price > this.p1) {
         this.p1 = pivot.price;
         this.p1Bar = pivot.barIndex;
